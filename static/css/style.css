@@ -42,26 +42,23 @@ html {
   text-transform: uppercase;
 }
 
-.hero .hero-foot {
-  height: 50px;
-  background: white;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.082);
-}
-
 .main-content {
   padding-top: 2rem;
   padding-bottom: 2rem;
   color: #3c4172;
   font-family: 'Poppins', sans-serif;
+  text-align: center;
+  margin-inline: 4rem;
+  padding-inline: 1rem;
 }
 
 .footer {
   bottom: 0;
   width: 100vw;
   padding: 0;
+  padding-inline: 0.75rem;
   height: 80px;
   line-height: 25px;
-  text-align: center;
   background: #1f2c6c;
   color: whitesmoke;
   padding-top: 2rem;
@@ -77,3 +74,88 @@ html {
 
 .white
 {color:ghostwhite}
+
+#map-spain {
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: rgba(0, 0, 0, 0.082) 5px 5px 5px;
+}
+
+#comInfo {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .hero .title {
+    font-size: 2.5rem;
+  }
+
+  .hero .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .hero .supersubtitle {
+    font-size: 1.1rem;
+    padding-top: 10px;
+  }
+
+  .main-content {
+    margin-inline: 0.8rem;
+  }
+
+  .main-content .title {
+    font-size: 1.5rem;
+  }
+
+  .main-content .text {
+    font-size: 0.9rem;
+  }
+  
+  .main-content #comImg {
+    width: 50%;
+  }
+
+  .footer > p {
+    font-size: 0.7rem;
+  }
+
+  .footer {
+    padding-top: 1rem;
+  }
+}
+
+@media (min-width: 3500px) {
+  .hero .title {
+    font-size: 8rem;
+  }
+
+  .hero .subtitle {
+    font-size: 2.5rem;
+  }
+
+  .hero .supersubtitle {
+    font-size: 2.5rem;
+    padding-top: 50px;
+  }
+
+  .main-content {
+    margin-inline: 15rem;
+  }
+
+  .main-content .title {
+    font-size: 4rem;
+  }
+
+  .main-content .text {
+    font-size: 2rem;
+  }
+  
+  .main-content #comImg {
+    width: 65%;
+  }
+
+  .footer > p {
+    font-size: 1.75rem;
+  }
+}

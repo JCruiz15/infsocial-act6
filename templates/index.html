@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>España - Mapa de comunidades</title>
+    <!-- Bulma Version 0.9.4-->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/bulma@0.9.4/css/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script 
+      src="https://kit.fontawesome.com/2828f7885a.js"
+      integrity="sha384-WAsFbnLEQcpCk8lM1UTWesAf5rGTCvb2Y+8LvyjAAcxK1c3s5c0L+SYOgxvc6PWG"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Spain_Peninsula.svg/1280px-Spain_Peninsula.svg.png" />
+  </head>
+
+  <body>
+    <!-- Begin Header -->
+    <div class="header-wrapper" id="home">
+      <!-- Begin Hero -->
+      <section class="hero is-large">
+        <!-- Begin Hero Content-->
+        <div class="hero-body">
+          <div class="container has-text-centered">
+            <h1 class="subtitle">Bienvenidos a</h1>
+            <h2 class="title">España</h2>
+            <h1 class="subtitle supersubtitle">Un mapa de comunidades</h1>
+          </div>
+        </div>
+        <!-- End Hero Content-->
+      </section>
+      <!-- End Hero -->
+    </div>
+    <!-- End Header -->
+
+    <!-- Begin Main Content -->
+    <div class="main-content is-fullheight">
+      <div class="columns is-desktop is-centered" style="justify-content: space-between;">
+        <div id="map" class="column is-7-desktop is-vcentered">
+          <svg id="map-spain"></svg>
+        </div>
+        <div class="column pt-6">
+          <h1 id="comTitle" class="title">Comunidades Autónomas</h1>
+          <img id="comImg" width="65%" style="box-shadow: #ccc 1px 1px 5px;" hidden/>
+          <p class="text" id="comPlaceholder">Haz click en una comunidad autónoma para obtener más información</p>
+        </div>
+      </div>
+      <div id="comInfo" class="text is-vcentered" hidden>
+        
+      </div>
+    </div>
+    
+    <!-- End Main Content -->
+
+    <!-- Begin Footer -->
+    <div class="footer has-text-centered is-flex-align-items-flex-end mt-auto">
+      <p>
+        Inspired by the <a href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/showcase.html">template made by Jeremy Thomas</a> ·
+        <a href="http://opensource.org/licenses/mit-license.php">MIT License</a> ·
+        </i><a href="https://github.com/JCruiz15/infsocial-act6"><i class="fab fa-github"></i> Repository</a>
+      </p>
+      
+    </div>
+    <!-- End Footer -->
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/d3-composite-projections@1.2.0"></script>
+    <script type="text/javascript" src="http://d3js.org/topojson.v0.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/topojson-client@2"></script>
+    <script type="text/javascript" src="static/js/comunities-info.js"></script>
+    <script>
+      const width = 960;
+      const height = 500;
+
+      var projection = d3.geoConicConformalSpain();
+
+      var svg = d3.select("#map-spain")
+        .attr("viewBox", "0 0 " + width + " " + height)
+
+      var path = d3.geoPath()
+        .projection(projection);
+
+      var url = "https://unpkg.com/es-atlas@0.2.0/es/municipalities.json";
+      
+      d3.json(url, function(error, spain){
+        if (error) throw error;  // Manejamos cualquier posible error
+  
+        svg.selectAll("g")
+          .data(topojson.feature(spain, spain.objects.autonomous_regions).features)
+          .enter().append("g")
+          .append("path")
+          .attr("d", path)
+          .attr("id", function(d) {
+            return cod_comAutonomas[parseInt(d.id)].name;
+          })
+          .attr("class", "comunidad")
+          .attr("fill", function(d) {
+            return cod_comAutonomas[parseInt(d.id)].color;
+          })
+          .on("mouseover", com_mouseOver)
+          .on("mouseout", com_mouseOut)
+          .on("click", function(d) {
+            com = cod_comAutonomas[parseInt(d.id)];
+            update_info_comunidad(com.wiki_name, com.flag);
+          })
+          
+          svg
+          .append("path")
+            .style("fill","none")
+            .style("stroke","#ccc")
+            .attr("d", projection.getCompositionBorders());
+
+      });
+    </script>
+    <script>
+      let com_mouseOver = function(d) {
+        d3.selectAll(".comunidad")
+          .transition()
+          .duration(100)
+          .style("opacity", .5)
+          .style("stroke", "transparent")
+          .style("stroke-width", "1");
+        d3.select(this)
+          .transition()
+          .duration(100)
+          .style("opacity", 1)
+          .style("cursor", "pointer")
+          .style("stroke", "white")
+          .style("stroke-width", "1");
+      }
+
+      let com_mouseOut = function(d) {
+        d3.selectAll(".comunidad")
+          .transition()
+          .duration(100)
+          .style("opacity", 1)
+          .style("stroke", "transparent")
+          .style("stroke-width", "1");
+        d3.select(this)
+          .transition()
+          .duration(100)
+          .style("stroke", "transparent")
+          .style("stroke-width", "1");
+      }
+    </script>
+    <script>
+      function update_info_comunidad(com, flag) {
+        $.get("/info/" + com, function(data) {
+          document.getElementById("comTitle").innerHTML = data.title;
+          document.getElementById("comImg").src = flag;
+          document.getElementById("comImg").hidden = false;
+          document.getElementById("comInfo").innerHTML = "<p>"+data.summary+"</p>" + "<em> Para más información visite su <a href='"+data.url+"' target='_blank'>entrada de Wikipedia</a></em>";
+          document.getElementById("comInfo").hidden = false;
+          document.getElementById("comPlaceholder").hidden = true;
+        })
+      }
+    </script>
+  </body>
+</html>
